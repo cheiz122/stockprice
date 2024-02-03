@@ -1,0 +1,20 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
+
+{% extends 'base.html' %}
+
+{% block title %}Prediction - Stock Prediction Dashboard{% endblock %}
+
+{% block header %}Stock Prediction{% endblock %}
+
+
+
+{% block content %}
+    <section class="streamlit-section">
+        <h2>Stock Price Prediction</h2>
+        <p>Click the link below to go to the Streamlit prediction page:</p>
+        <a href="{% url 'streamlit_redirect' %}">Go to Streamlit Prediction</a>
+    </section>
+{% endblock %}

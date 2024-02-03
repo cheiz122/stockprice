@@ -1,0 +1,90 @@
+/* style.css */
+/* style.css */
+
+/* Reset margin and padding for all elements */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+}
+
+nav {
+    display: flex;
+    justify-content: space-around;  /* Adjust spacing between menu items */
+    align-items: center;
+    margin-top: 10px;  /* Add margin to the top of the navigation */
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    padding: 10px;
+}
+
+nav a:hover {
+    background-color: #555;
+}
+
+.news-section,
+.other-section,
+.link-section {
+    margin: 20px 0;
+}
+
+.link-section {
+    text-align: center;
+}
+
+.link-section a {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.link-section a:hover {
+    background-color: #45a049;
+}
+.about-section {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.about-section h2 {
+    color: #333;
+    font-size: 24px;
+}
+
+.about-section p {
+    color: #666;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.news-item {
+    margin-bottom: 20px;
+}
+
+.news-image {
+    float: left;
+    width: 150px; /* Adjust as needed */
+    margin-right: 20px; /* Add some space between image and summary */
+}
+
+.news-summary {
+    overflow: hidden; /* Clear the float */
+}

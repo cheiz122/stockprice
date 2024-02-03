@@ -1,0 +1,22 @@
+/* stockprice/static/css/about.css */
+
+/* Add your styles for the about page here */
+
+.about-section {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.about-section h2 {
+    color: #333;
+    font-size: 24px;
+}
+
+.about-section p {
+    color: #666;
+    font-size: 16px;
+    line-height: 1.5;
+}

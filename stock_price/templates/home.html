@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"
+
+{% block title %}Market News Sentiment Analysis{% endblock %}
+
+{% block content %}
+    <h1>Welcome to Market News Sentiment Analysis</h1>
+
+    <div class="landing-section">
+        <h2>Stock Prediction Dashboard</h2>
+        <p>
+            Explore stock predictions and other relevant information on our platform.
+        </p>
+    </div>
+
+    <div class="news-section">
+        <h2>Latest News Sentiment</h2>
+        <p>Fetching news sentiment data...</p>
+        
+        {% if news_sentiment_data %}
+            <p>Sending request to AlphaVantage API...</p>
+            <p>API Response:</p>
+            
+            {% for item in news_sentiment_data.feed %}
+                <div class="news-item">
+                    <img src="{{ item.banner_image }}" alt="Banner Image" class="news-image">
+                    <div class="news-summary">
+                        <h3>{{ item.title }}</h3>
+                        <p>Source: {{ item.source }}</p>
+                        <p>Category: {{ item.category_within_source }}</p>
+                        <p><strong>Summary:</strong> {{ item.summary }}</p>
+                        <p><a href="{{ item.url }}" target="_blank">Read more</a></p>
+                    </div>
+                    <div style="clear: both;"></div> <!-- Clear the float -->
+                    <hr>
+                </div>
+            {% endfor %}
+            
+        {% else %}
+            <p>No news sentiment data available.</p>
+        {% endif %}
+    </div>
+
+    <div class="about-section">
+        <h2>About Market News Sentiment Analysis</h2>
+        <p>This is a web application that analyzes market news sentiment using AlphaVantage API. It provides insights into the sentiment of various news articles related to financial markets, earnings, and technology.</p>
+        <p>Visit the <a href="https://www.example.com" target="_blank">official website</a> for more information.</p>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Market News Sentiment Analysis. All rights reserved.</p>
+    </footer>
+{% endblock %}
+
+
+
+
+

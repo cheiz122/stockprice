@@ -1,0 +1,24 @@
+<!-- stockprice/templates/about.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+{% block title %}About - Stock Prediction Dashboard{% endblock %}
+
+{% block content %}
+    <section class="about-section">
+        <h2>About Stock Price Prediction</h2>
+        <p>
+            Welcome to Stock Price Prediction, your go-to platform for analyzing and predicting stock prices.
+            Our cutting-edge algorithms and machine learning models provide accurate predictions to help you make
+            informed investment decisions.
+        </p>
+        <p>
+            Whether you are a seasoned investor or just starting, our platform is designed to assist you in
+            understanding market trends and making strategic moves in the stock market.
+        </p>
+        <p>
+            Explore the power of data-driven insights and stay ahead in the financial market with Stock Price Prediction.
+        </p>
+    </section>
+{% endblock %}
