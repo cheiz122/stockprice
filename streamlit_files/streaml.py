@@ -24,10 +24,12 @@ def predict_future_prices(test_data):
         st.error("Error occurred while fetching future predictions")
         return None
 
-def predict(input_data):
+def predict(input_data,symbol):
     url = 'http://localhost:8000/api/predict/'
+    #print("Data type of input_data:", type(x_test))
     input_data_list = input_data.tolist()
-    data = {"data": input_data_list}
+    print(symbol)
+    data = {"data": input_data_list,"symbol":symbol}
     response = requests.post(url, json=data)
     if response.status_code == 200:
         predictions = response.json().get('predictions')
@@ -80,7 +82,7 @@ def main():
                 x_test.append(test_data[i-100:i, 0])
                 y_test.append(test_data[i, 0])
             x_test, y_test = np.array(x_test), np.array(y_test)
-            predictions = predict(x_test)
+            predictions = predict(x_test,symbol)
             y_test = scaler.inverse_transform(y_test.reshape(-1, 1))
             future_dates = pd.date_range(start=df['Date'].iloc[-1] + pd.Timedelta(days=1), periods=30, freq='D')
             predicted_prices = predict_future_prices(test_data)

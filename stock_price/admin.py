@@ -1,53 +1,51 @@
-
+# admin.py
 from django.contrib import admin
-from django.db.models import Count
-from .models import StockPrice, LastLoadedDate,load_lstm
-from .management.commands.api import Command
-from datetime import datetime
-import pytz
-from django.utils.timezone import make_aware
+from .models import Load_LSTM
+
+  
+admin.site.register(Load_LSTM)
+
+
 '''
-def run_stock_data_fetch(modeladmin, request, queryset):
-    # Call the management command
-    command = Command()
-    command.handle()
-    # Inform the user that the command has been executed
-    modeladmin.message_user(request, "Stock data has been fetched and saved.")
+import os
+from django.contrib import admin
+from django import forms
+from .models import load_lstm
+from keras.models import load_model
 
-run_stock_data_fetch.short_description = "Run Stock Data Fetch"
+class SavedModelForm(forms.ModelForm):
+    class Meta:
+        model = load_lstm
+        fields = '__all__'
 
-@admin.register(LastLoadedDate)
-class LastLoadedDateAdmin(admin.ModelAdmin):
-    list_display = ['symbol', 'last_loaded_date']
-    list_filter = ['symbol']
-    actions = [run_stock_data_fetch]
+    def clean_path(self):
+        path = self.cleaned_data['path']
+        if not os.path.exists(path):
+            raise forms.ValidationError("The specified path does not exist.")
+        if not os.path.isdir(path):
+            raise forms.ValidationError("The specified path is not a directory.")
 
-    def changelist_view(self, request, extra_context=None):
-        # Add a custom context variable to display the latest date data was fetched
-        latest_data = LastLoadedDate.objects.latest('last_loaded_date')
-        latest_data_fetched = latest_data.last_loaded_date
-        return super(LastLoadedDateAdmin, self).changelist_view(request, extra_context={'latest_data_fetched': latest_data_fetched})
+        directory_path, file_name = os.path.split(path)
+        if file_name not in os.listdir(directory_path):
+            raise forms.ValidationError(f"No file named '{file_name}' found in the specified directory.")
 
-    def get_urls(self):
-        from django.urls import path
-        from .views import update_data_fetched_date
-        urls = super().get_urls()
-        custom_urls = [
-            path('update-data-fetched-date/', self.admin_site.admin_view(update_data_fetched_date), name='update_data_fetched_date'),
-        ]
-        return custom_urls + urls
+        return path
 
-@admin.register(StockPrice)
-class StockPriceAdmin(admin.ModelAdmin):
-    list_display = ['symbol', 'date', 'open', 'close', 'high', 'low', 'volume']
-    list_filter = ['symbol']
+class SavedModelAdmin(admin.ModelAdmin):
+    list_display = ('name', 'description', 'path')
+    search_fields = ('name', 'description')
+    form = SavedModelForm
 
-    def changelist_view(self, request, extra_context=None):
-        # Add a custom context variable to display the total number of stock price records
-        total_records = StockPrice.objects.count()
-        return super(StockPriceAdmin, self).changelist_view(request, extra_context={'total_records': total_records})
-'''
-@admin.register(load_lstm)
-class OtherModelAdmin(admin.ModelAdmin):
-    # Define admin for other models if needed
-    pass
+    def add_model(self, request, queryset):
+        return super().add_view(request)
+
+    add_model.short_description = "Add New Model"
+
+    def delete_model(self, request, queryset):
+        for obj in queryset:
+            obj.delete()
+        self.message_user(request, "Selected model(s) deleted successfully.")
+    
+    delete_model.short_description = "Delete Selected Model(s)"
+
+admin.site.register(load_lstm, SavedModelAdmin)'''

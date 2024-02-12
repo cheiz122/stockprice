@@ -22,12 +22,16 @@ class StockPrice(models.Model):
 
     def __str__(self):   
         return f"{self.symbol} - {self.timestamp}"    
+class Load_LSTM(models.Model):
+    model_name = models.CharField(max_length=100, unique=True)
+    model_file = models.FileField(upload_to='pretrained_models/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
 
-class load_lstm(models.Model):
-    symbol = models.CharField(max_length=10)
-    model_path = models.CharField(max_length=255)
+
     def __str__(self):
-        return self.symbol 
+        return self.model_name        
+
+     
 
 class LastLoadedDate(models.Model):
     symbol = models.CharField(max_length=10, unique=True)
