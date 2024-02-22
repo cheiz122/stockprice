@@ -17,21 +17,72 @@ from django.core.serializers import serialize
 from django.http import JsonResponse
 from keras.models import load_model
 import os
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from .forms import LoginForm, SignupForm
+
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
+from .forms import LoginForm
+
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
+from .forms import LoginForm
+
+def login_view(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('home')  # Redirect to home page after successful login
+            else:
+                messages.error(request, "Invalid username or password.")
+        else:
+            # Print out form errors to debug
+            print(form.errors)
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = LoginForm()
+    return render(request, 'login.html', {'form': form})
+
+
+def signup_view(request):
+    if request.method == 'POST':
+        form = SignupForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')  # Redirect to login page after successful signup
+    else:
+        form = SignupForm()
+    return render(request, 'signup.html', {'form': form})
+
+
 @csrf_exempt
 @api_view(['GET', 'POST']) 
 def predict_future(request):
     if request.method == 'POST':
         try:
             input_data = request.data.get('payload')
+            symbol = request.data.get('symbol').upper() # Get stock symbol from request
+            period = int(request.data.get('period',))
+            print(symbol)
+            print(period)
             test_data = np.array(input_data)
             BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-            model_path = os.path.join(BASE_DIR, 'staticfiles', 'models', 'keras.h5')
-            model = load_model(model_path)
+            #model_path = os.path.join(BASE_DIR, 'staticfiles', 'models', 'keras.h5')
+            saved_model = Load_LSTM.objects.get(model_name=symbol)
+            model = load_model(saved_model.model_file.path)
             scaler = MinMaxScaler()  
             predicted_prices = []
             last_window = test_data[-100:]
           
-            for _ in range(30):
+            for _ in range(period):
                 last_window_reshaped = last_window.reshape(1, 100)
                 print("Last Window Reshaped Shape:", last_window_reshaped.shape)
                 prediction = model.predict(last_window_reshaped)
@@ -45,37 +96,6 @@ def predict_future(request):
             return JsonResponse({'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=400)
-'''        
-@csrf_exempt
-@api_view(['GET', 'POST']) 
-def predict(request):
-    if request.method == 'POST':
-
-        try:
-
-            input_data = request.data.get('data')
-            if input_data is None:
-                return JsonResponse({'error': 'No input data provided'}, status=400)
-
-            input_data = [0 if x is None else x for x in input_data]  # Replace None with 0
-            input_data = np.array(input_data)
-           
-            if input_data.size == 0:
-                return JsonResponse({'error': 'Input data is empty'}, status=400)
-            
-
-            BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-            model_path = os.path.join(BASE_DIR, 'staticfiles', 'models', 'keras.h5')
-            model = load_model(model_path)
-
-            predictions = model.predict(input_data)
-            return JsonResponse({'predictions': predictions.tolist()})
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
-    else:
-        return JsonResponse({'error': 'Invalid request method'}, status=400)  '''
-
-    
 @api_view(['GET'])
 def get_stock_data(request, symbol):
     try:
@@ -131,7 +151,7 @@ def predict(request):
             if input_data.size == 0:
                 return JsonResponse({'error': 'Input data is empty'}, status=400)
 
-            symbol = request.data.get('symbol')
+            symbol = request.data.get('symbol').upper()
             print("Received symbol:", symbol)
             saved_model = Load_LSTM.objects.get(model_name=symbol)
             model = load_model(saved_model.model_file.path)

@@ -5,7 +5,10 @@ from . import views
 urlpatterns = [
 #path('',views.run_streamlit_app,name='run_streamlit_app'),
 #path('admin/update-data-fetched-date/', views.update_data_fetched_date, name='update_data_fetched_date'),
-path('',views.home, name='home'), 
+    
+path('', views.login_view, name='login'),
+path('signup/', views.signup_view, name='signup'),
+path('home/',views.home, name='home'), 
 path('about/', views.about, name='about'),
 path('streamlit/', views.streamlit_redirect, name='streamlit_redirect'),
 path('api/predict/', views.predict, name='predict'),
