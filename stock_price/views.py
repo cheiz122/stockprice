@@ -19,49 +19,76 @@ from keras.models import load_model
 import os
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
-from .forms import LoginForm, SignupForm
+
 
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from .forms import LoginForm
 
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from .forms import LoginForm
+from .forms import loginform
 
-def login_view(request):
+from django.contrib import messages
+from django.http import HttpResponse
+from django.shortcuts import redirect, render
+from django.contrib.auth import authenticate,login as login
+from .models import name
+from django.template import loader
+# Create your views here.
+
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
+
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
+from django.contrib.auth import authenticate,login as login1
+def login(request):
+    return render(request, 'login.html')
+
+def home(request):
     if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect('home')  # Redirect to home page after successful login
-            else:
-                messages.error(request, "Invalid username or password.")
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            messages.success(request, f"Login successful. Welcome, {username}!")
+            users = name.objects.all().values()
+            template = loader.get_template('home.html')
+            context = {'users': users}
+            return HttpResponse(template.render(context, request))
         else:
-            # Print out form errors to debug
-            print(form.errors)
-            messages.error(request, "Please correct the errors below.")
+            messages.error(request, "Invalid username or password.")
+            return redirect('login')
     else:
-        form = LoginForm()
-    return render(request, 'login.html', {'form': form})
+        return redirect('login')
 
+        
+def page(request):
+    
+    return render(request,'register.html')
+    
+def register(request):
+	if request.method == 'POST':
+		form = loginform(request.POST)
+		if form.is_valid():
+			form.save()
+			# Authenticate and login
+			username = form.cleaned_data['username']
+			password = form.cleaned_data['password1']
+			user = authenticate(username=username, password=password)
+            #user1=User(username=username,password=password)
+			login1(request, user)
+			messages.success(request, f"You Have Successfully Registered! Welcome!")
+			return render(request,'login.html')
+	else:
+		form = loginform()
+		return render(request, 'register.html', {'form':form})
 
-def signup_view(request):
-    if request.method == 'POST':
-        form = SignupForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('login')  # Redirect to login page after successful signup
-    else:
-        form = SignupForm()
-    return render(request, 'signup.html', {'form': form})
-
+	return render(request, 'register.html', {'form':form})
 
 @csrf_exempt
 @api_view(['GET', 'POST']) 
@@ -71,6 +98,7 @@ def predict_future(request):
             input_data = request.data.get('payload')
             symbol = request.data.get('symbol').upper() # Get stock symbol from request
             period = int(request.data.get('period',))
+            n_points =int (request.data.get('n_points',))
             print(symbol)
             print(period)
             test_data = np.array(input_data)
@@ -80,10 +108,10 @@ def predict_future(request):
             model = load_model(saved_model.model_file.path)
             scaler = MinMaxScaler()  
             predicted_prices = []
-            last_window = test_data[-100:]
+            last_window = test_data[-n_points:]
           
             for _ in range(period):
-                last_window_reshaped = last_window.reshape(1, 100)
+                last_window_reshaped = last_window.reshape(1, n_points)
                 print("Last Window Reshaped Shape:", last_window_reshaped.shape)
                 prediction = model.predict(last_window_reshaped)
                # print("Prediction:", prediction) 

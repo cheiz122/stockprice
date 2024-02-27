@@ -3,11 +3,13 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+
+ path('register',views.register,name='register'),
+    
 #path('',views.run_streamlit_app,name='run_streamlit_app'),
 #path('admin/update-data-fetched-date/', views.update_data_fetched_date, name='update_data_fetched_date'),
     
-path('', views.login_view, name='login'),
-path('signup/', views.signup_view, name='signup'),
+path('', views.login, name='login'),
 path('home/',views.home, name='home'), 
 path('about/', views.about, name='about'),
 path('streamlit/', views.streamlit_redirect, name='streamlit_redirect'),

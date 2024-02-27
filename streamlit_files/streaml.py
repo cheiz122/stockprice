@@ -174,8 +174,8 @@ def fetch_stock_data(symbol, start_date, end_date):
         st.error(f"Error: {e}")
         st.stop()
 
-def predict_future_prices(test_data, symbol, period):
-    payload = {'payload': test_data.tolist(), 'symbol': symbol, 'period': period}
+def predict_future_prices(test_data, symbol, period,n_points):
+    payload = {'payload': test_data.tolist(), 'symbol': symbol, 'period': period,'n_points':n_points}
     response = requests.post('http://localhost:8000/api/predict_future/', json=payload)
     if response.status_code == 200:
         predicted_prices = response.json()['predicted_prices']
@@ -217,8 +217,9 @@ def main():
     end_date = st.text_input("Enter end date (YYYY-MM-DD):", datetime.now().strftime('%Y-%m-%d'))
     n_days = st.slider('Days of prediction:', 1, 15)
     period = n_days
-    n_points = st.slider('Number of data points for prediction:', min_value=1, max_value=500, value=100)
-
+    n_points = st.slider('Number of data points for prediction:', min_value=50, max_value=180, value=180)
+   # max_look_back = 500  # Change this value as needed
+    #n_points = st.slider('Number of data points for prediction (max allowed: {}):'.format(max_look_back), min_value=1, max_value=max_look_back, value=100)
     if st.button("Fetch Data"):
         try:
             # Make an HTTP request to fetch stock data
@@ -247,8 +248,8 @@ def main():
             scaled_data = scaler.fit_transform(df[['Close']])
 
             # Split data into training and testing sets
-            train_data = scaled_data[:int(len(df) * 0.80)]
-            test_data = scaled_data[int(len(df) * 0.80) - 100:]
+            train_data = scaled_data[:int(len(df) * 0.75)]
+            test_data = scaled_data[int(len(df) * 0.75) - 100:]
 
             # Prepare testing data
             x_test = []
@@ -269,7 +270,7 @@ def main():
             #future_dates = pd.date_range(start=df['Date'].iloc[-1] + pd.Timedelta(days=1), periods=30, freq='D')
             future_dates = pd.date_range(start=pd.Timestamp.today() , periods=n_days, freq='D')
 
-            predicted_prices = predict_future_prices(test_data, symbol, period)
+            predicted_prices = predict_future_prices(test_data, symbol, period,n_points)
 
             def moving_avg(df):
                 df['50_MA'] = df['Close'].rolling(window=50).mean()
