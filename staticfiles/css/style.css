@@ -1,28 +1,32 @@
-/* style.css */
-/* style.css */
+/* styles.css */
 
-/* Reset margin and padding for all elements */
-* {
+/* Common styles */
+/* Reset CSS */
+body, html {
+    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+/* Global Styles */
 body {
-    font-family: Arial, sans-serif;
+    background-color: #f8f8f8; /* Match the background color of the rest of the website */
 }
 
+/* Header Styles */
 header {
     background-color: #333;
     color: white;
     padding: 10px;
 }
 
+/* Navigation Styles */
 nav {
     display: flex;
-    justify-content: space-around;  /* Adjust spacing between menu items */
+    justify-content: space-around;
     align-items: center;
-    margin-top: 10px;  /* Add margin to the top of the navigation */
+    margin-top: 10px;
 }
 
 nav a {
@@ -35,14 +39,10 @@ nav a:hover {
     background-color: #555;
 }
 
-.news-section,
-.other-section,
-.link-section {
-    margin: 20px 0;
-}
-
+/* Link Section Styles */
 .link-section {
     text-align: center;
+    margin-top: 20px;
 }
 
 .link-section a {
@@ -56,6 +56,8 @@ nav a:hover {
 .link-section a:hover {
     background-color: #45a049;
 }
+
+/* About Section Styles */
 .about-section {
     margin-top: 20px;
     padding: 20px;
@@ -75,16 +77,156 @@ nav a:hover {
     line-height: 1.5;
 }
 
+/* News Item Styles */
 .news-item {
     margin-bottom: 20px;
 }
 
 .news-image {
     float: left;
-    width: 150px; /* Adjust as needed */
-    margin-right: 20px; /* Add some space between image and summary */
+    width: 400px;
+    margin-right: 200px;
 }
 
 .news-summary {
-    overflow: hidden; /* Clear the float */
+    overflow: hidden;
+}
+
+/* Login and Register Form Styles */
+form {
+    width: 300px;
+    margin: 100px auto; /* Center the form horizontally */
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: white; /* Match the background color of the form with the rest of the website */
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333; /* Match the label color with the rest of the website */
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+button[type="submit"] {
+    background-color: #0095ff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.register-link {
+    text-align: center; /* Center align the content */
+}
+
+a {
+    color: #0095ff;
+    text-decoration: none;
+}
+
+/* Password Criteria Styles */
+.password-criteria {
+    margin-bottom: 10px;
+}
+
+.password-criteria label {
+    margin-right: 10px;
+}
+
+.password-criteria input[type="radio"] {
+    display: none;
+}
+
+.password-criteria input[type="radio"] + label::before {
+    content: "";
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-color: red; /* Default color */
+    border-radius: 50%;
+    margin-right: 5px;
+    border: 2px solid #ccc;
+}
+
+.password-criteria input[type="radio"]:checked + label::before {
+    background-color: green; /* Change to green if criteria is met */
+    content: "✔"; /* Change to tick symbol if criteria is met */
+    color: white;
+    text-align: center;
+    line-height: 20px;
+}
+/* Common styles for all devices */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #f8f8f8; /* Match the background color of the rest of the website */
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333; /* Match the label color with the rest of the website */
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+button[type="submit"] {
+    background-color: #0095ff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.register-link {
+    text-align: center; /* Center align the content */
+}
+
+.register-link a {
+    color: #0095ff;
+    text-decoration: none;
+}
+
+/* Responsive styles for different devices */
+@media only screen and (max-width: 768px) {
+    /* Adjust form width and margin for smaller screens */
+    form.register-form {
+        width: 80%;
+        margin: 50px auto;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    /* Adjust form width and margin for even smaller screens */
+    form.register-form {
+        width: 90%;
+        margin: 30px auto;
+    }
 }

@@ -95,6 +95,39 @@ def register(request):
 def predict_future(request):
     if request.method == 'POST':
         try:
+            # Assuming request.data is accessible like this; otherwise, you might need request.POST or request.body parsing depending on your request's content type
+            input_data = request.data.get('payload')
+            symbol = request.data.get('symbol').upper()  # Get stock symbol from request
+            period = int(request.data.get('period', 1))  # Default period to 1 if not provided
+            n_points = int(request.data.get('n_points', 1))  # Default n_points to 1 if not provided
+
+            test_data = np.array(input_data)
+            # Load your LSTM model
+            saved_model = Load_LSTM.objects.get(model_name=symbol)
+            model = load_model(saved_model.model_file.path)
+
+            predicted_prices = []
+            last_window = test_data[-n_points:]  # Use the last n_points from the input data as the initial window
+
+            for _ in range(period):
+                # Reshape the window for prediction
+                last_window_reshaped = last_window.reshape(1, n_points)
+                prediction = model.predict(last_window_reshaped)
+                predicted_prices.append(prediction[0][0])
+                # Update the window with the new prediction, discarding the oldest data point
+                last_window = np.append(last_window[1:], prediction[0][0])
+
+            # Optionally: Apply inverse transformation if your model's predictions are scaled
+            # predicted_prices = scaler.inverse_transform(np.array(predicted_prices).reshape(-1, 1))
+
+            return Response({'predicted_prices': predicted_prices})
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+
+'''
+def predict_future(request):
+    if request.method == 'POST':
+        try:
             input_data = request.data.get('payload')
             symbol = request.data.get('symbol').upper() # Get stock symbol from request
             period = int(request.data.get('period',))
@@ -123,7 +156,7 @@ def predict_future(request):
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
     else:
-        return JsonResponse({'error': 'Invalid request method'}, status=400)
+        return JsonResponse({'error': 'Invalid request method'}, status=400)     '''
 @api_view(['GET'])
 def get_stock_data(request, symbol):
     try:

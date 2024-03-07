@@ -53,6 +53,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = 'stock_price_prediction.urls'
@@ -146,3 +148,4 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', DJANGO_SETTINGS_MODULE)
 
 # Add your Django project's root directory to sys.path
 DJANGO_ROOT = '/path/to/your/django/project'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'

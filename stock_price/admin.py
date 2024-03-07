@@ -4,6 +4,9 @@ from .models import Load_LSTM
 
   
 admin.site.register(Load_LSTM)
+admin.site.site_header = "Stock price Prediction Admin"
+admin.site.site_title = "Stock Price Prediction Admin Portal"
+admin.site.index_title = "Welcome to Stock Price Prediction Portal"
 
 
 '''

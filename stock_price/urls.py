@@ -1,9 +1,9 @@
 from django.contrib import admin
 from django.urls import path
 from . import views
-
+from django.contrib.auth.views import LogoutView 
 urlpatterns = [
-
+ path('logout/', LogoutView.as_view(next_page='login'), name='logout'),  # Redirects to 'home' after logout
  path('register',views.register,name='register'),
     
 #path('',views.run_streamlit_app,name='run_streamlit_app'),
