@@ -1,1 +1,0 @@
-web: gunicorn stock_price_prediction.wsgi
