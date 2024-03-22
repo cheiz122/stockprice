@@ -1,54 +1,28 @@
-import os
 from django.core.serializers import serialize
 from django.http import HttpResponseRedirect, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 import numpy as np
 import requests
 from sklearn.preprocessing import MinMaxScaler
-from .models import StockPrice,Load_LSTM
+from .models import StockPrice, Load_LSTM
 from django_pandas.io import read_frame
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from keras.models import model_from_json
-from django.core.serializers import serialize
-from django.http import JsonResponse
-from keras.models import load_model
+from keras.models import model_from_json, load_model
 import os
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
-
-
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
-from django.contrib import messages
-
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import loginform
-
-from django.contrib import messages
-from django.http import HttpResponse
-from django.shortcuts import redirect, render
-from django.contrib.auth import authenticate,login as login
 from .models import name
 from django.template import loader
-# Create your views here.
+from django.http import HttpResponse
 
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
-from django.contrib import messages
-
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
-from django.contrib import messages
 from django.contrib.auth import authenticate,login as login1
 def login(request):
     return render(request, 'login.html')
-
+def logout(request):
+    return redirect('login')
 def home(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -95,7 +69,6 @@ def register(request):
 def predict_future(request):
     if request.method == 'POST':
         try:
-            # Assuming request.data is accessible like this; otherwise, you might need request.POST or request.body parsing depending on your request's content type
             input_data = request.data.get('payload')
             symbol = request.data.get('symbol').upper()  # Get stock symbol from request
             period = int(request.data.get('period', 1))  # Default period to 1 if not provided
@@ -107,56 +80,15 @@ def predict_future(request):
             model = load_model(saved_model.model_file.path)
 
             predicted_prices = []
-            last_window = test_data[-n_points:]  # Use the last n_points from the input data as the initial window
-
-            for _ in range(period):
-                # Reshape the window for prediction
-                last_window_reshaped = last_window.reshape(1, n_points)
-                prediction = model.predict(last_window_reshaped)
-                predicted_prices.append(prediction[0][0])
-                # Update the window with the new prediction, discarding the oldest data point
-                last_window = np.append(last_window[1:], prediction[0][0])
-
-            # Optionally: Apply inverse transformation if your model's predictions are scaled
-            # predicted_prices = scaler.inverse_transform(np.array(predicted_prices).reshape(-1, 1))
-
-            return Response({'predicted_prices': predicted_prices})
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
-
-'''
-def predict_future(request):
-    if request.method == 'POST':
-        try:
-            input_data = request.data.get('payload')
-            symbol = request.data.get('symbol').upper() # Get stock symbol from request
-            period = int(request.data.get('period',))
-            n_points =int (request.data.get('n_points',))
-            print(symbol)
-            print(period)
-            test_data = np.array(input_data)
-            BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-            #model_path = os.path.join(BASE_DIR, 'staticfiles', 'models', 'keras.h5')
-            saved_model = Load_LSTM.objects.get(model_name=symbol)
-            model = load_model(saved_model.model_file.path)
-            scaler = MinMaxScaler()  
-            predicted_prices = []
             last_window = test_data[-n_points:]
-          
             for _ in range(period):
                 last_window_reshaped = last_window.reshape(1, n_points)
-                print("Last Window Reshaped Shape:", last_window_reshaped.shape)
                 prediction = model.predict(last_window_reshaped)
-               # print("Prediction:", prediction) 
                 predicted_prices.append(prediction[0][0])
                 last_window = np.append(last_window[1:], prediction[0][0])
-
-            #predicted_prices = scaler.inverse_transform((predicted_prices).reshape(-1, 1))
             return Response({'predicted_prices': predicted_prices})
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
-    else:
-        return JsonResponse({'error': 'Invalid request method'}, status=400)     '''
 @api_view(['GET'])
 def get_stock_data(request, symbol):
     try:

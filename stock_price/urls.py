@@ -3,12 +3,8 @@ from django.urls import path
 from . import views
 from django.contrib.auth.views import LogoutView 
 urlpatterns = [
- path('logout/', LogoutView.as_view(next_page='login'), name='logout'),  # Redirects to 'home' after logout
  path('register',views.register,name='register'),
-    
-#path('',views.run_streamlit_app,name='run_streamlit_app'),
-#path('admin/update-data-fetched-date/', views.update_data_fetched_date, name='update_data_fetched_date'),
-    
+path('logout/', views.logout, name='logout'),
 path('', views.login, name='login'),
 path('home/',views.home, name='home'), 
 path('about/', views.about, name='about'),

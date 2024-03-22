@@ -67,15 +67,11 @@ def main():
     end_date = st.text_input("Enter end date (YYYY-MM-DD):", datetime.now().strftime('%Y-%m-%d'))
     n_days = st.slider('Days of prediction:', 1, 15)
     period = n_days
-    n_points = st.slider('Number of data points for prediction:', min_value=50, max_value=180, value=180)
-   # max_look_back = 500  # Change this value as needed
-    #n_points = st.slider('Number of data points for prediction (max allowed: {}):'.format(max_look_back), min_value=1, max_value=max_look_back, value=100)
+    n_points = 100
+  
     if st.button("Fetch Data"):
         try:
-            # Make an HTTP request to fetch stock data
             df = fetch_stock_data(symbol, start_date, end_date)
-
-            # Display summary statistics and stock data
             st.write(df.describe())
             st.write("First 5 rows:")
             st.write(df.head())
@@ -109,19 +105,11 @@ def main():
                 x_test.append(test_data[i-n_points:i, 0])
                 y_test.append(test_data[i, 0])
             x_test, y_test = np.array(x_test), np.array(y_test)
-             #for i in range(100, len(test_data)):
-                #x_test.append(test_data[i - 100:i, 0])
-               # y_test.append(test_data[i, 0])
-            #x_test, y_test = np.array(x_test), np.array(y_test) 
             x_test_reshaped = x_test.reshape(x_test.shape[0], x_test.shape[1], 1)
             predictions = predict(x_test_reshaped, symbol)
             y_test = scaler.inverse_transform(y_test.reshape(-1, 1))
-            #future_dates = pd.date_range(start=pd.Timestamp.today(), periods=30, freq='D')
-            #future_dates = pd.date_range(start=df['Date'].iloc[-1] + pd.Timedelta(days=1), periods=30, freq='D')
             future_dates = pd.date_range(start=pd.Timestamp.today() , periods=n_days, freq='D')
-
             predicted_prices = predict_future_prices(test_data, symbol, period,n_points)
-
             def moving_avg(df):
                 df['50_MA'] = df['Close'].rolling(window=50).mean()
                 df['200_MA'] = df['Close'].rolling(window=200).mean()
@@ -148,8 +136,6 @@ def main():
             if predicted_prices and n_days > 0:
                 predicted_prices = np.array(predicted_prices)
                 predicted_prices = scaler.inverse_transform((predicted_prices).reshape(-1, 1))
-                #future_dates = pd.date_range(start=df['Date'].iloc[-1] + pd.Timedelta(days=1), periods=n_days,
-                                             #freq='D')
                 fig_predicted_prices = go.Figure()
                 fig_predicted_prices.add_trace(go.Scatter(x=df['Date'], y=df['Close'], mode='lines', name='Actual'))
                 fig_predicted_prices.add_trace(
