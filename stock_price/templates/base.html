@@ -7,29 +7,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Stock Prediction Dashboard{% endblock %}</title>
-    
-    <!-- Add other head elements as needed -->
 </head>
 <body>
 
 <header>
     <h1>Welcome to the Stock Prediction Dashboard</h1>
     <nav>
-        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'home' %}">Stock News</a>
         <a href="{% url 'streamlit_redirect' %}">Stock Prediction</a>
         <a href="{% url 'about' %}">About</a>
         <a href="#">Contact</a>
         <a href="{% url 'logout' %}">Logout</a>
         
-        <!-- Add more navigation links as needed -->
     </nav>
 </header>
 
 <main>
     {% block content %}{% endblock %}
 </main>
-
-<!-- Add any additional scripts or footers as needed -->
 
 </body>
 </html>

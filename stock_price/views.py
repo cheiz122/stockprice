@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 import numpy as np
 import requests
 from sklearn.preprocessing import MinMaxScaler
-from .models import StockPrice, Load_LSTM
+from .models import StockPrice, Load_LSTM,login1
 from django_pandas.io import read_frame
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -14,33 +14,30 @@ import os
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import loginform
-from .models import name
 from django.template import loader
 from django.http import HttpResponse
-
-from django.contrib.auth import authenticate,login as login1
 def login(request):
     return render(request, 'login.html')
 def logout(request):
     return redirect('login')
-def home(request):
+
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from .models import login1  # Assuming 'login1' is your model
+
+def authenticate_user(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
         if user is not None:
             messages.success(request, f"Login successful. Welcome, {username}!")
-            users = name.objects.all().values()
-            template = loader.get_template('home.html')
-            context = {'users': users}
-            return HttpResponse(template.render(context, request))
+            return redirect('home')
         else:
             messages.error(request, "Invalid username or password.")
             return redirect('login')
     else:
         return redirect('login')
-
-        
 def page(request):
     
     return render(request,'register.html')

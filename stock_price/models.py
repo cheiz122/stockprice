@@ -39,7 +39,7 @@ class LastLoadedDate(models.Model):
 
     def __str__(self):
         return self.symbol
-class login(models.Model):
+class login1(models.Model):
     username=models.CharField(max_length=50)
     password1=models.CharField(max_length=50)
     password2=models.CharField(max_length=50)
